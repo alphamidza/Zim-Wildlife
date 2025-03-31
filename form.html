@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zimbabwe Wildlife Management System</title>
+    <style>
+        :root {
+            --primary: #2E7D32; /* Zimbabwe flag green */
+            --secondary: #FFD700; /* Zimbabwe flag gold */
+            --highlight: #1565C0; /* Zimbabwe flag blue */
+            --danger: #D32F2F; /* Alert red */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--highlight);
+            transform: translateY(-2px);
+        }
+
+        #submitBtn {
+            background-color: var(--primary);
+            margin-right: 10px;
+        }
+
+        #viewDataBtn {
+            background-color: var(--highlight);
+        }
+
+        .status-message {
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        /* Location options styles */
+        .location-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .location-option {
+            padding: 8px 12px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .location-option:hover {
+            background-color: #e0e0e0;
+        }
+
+        .location-option.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        #gpsContainer {
+            display: none;
+        }
+
+        #manualGps {
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Modal styles for survey data */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e9e9e9;
+        }
+
+        .status-icon {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .vulnerable { background-color: #FFA000; }
+        .endangered { background-color: var(--danger); }
+        .critical { background-color: #6A1B9A; }
+
+        /* Language toggle styles */
+        .language-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            padding: 8px 12px;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .lang-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .lang-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="language-toggle">
+        <button id="langEn" class="lang-btn active">English</button>
+        <button id="langSn" class="lang-btn">Shona</button>
+        <button id="langNd" class="lang-btn">Ndebele</button>
+    </div>
+
+    <div class="form-container">
+        <h1 id="formTitle">Zimbabwe Wildlife Population Survey</h1>
+        <form id="surveyForm">
+            <div class="grid-2col">
+                <div class="form-group">
+                    <label for="species" id="speciesLabel">Species:</label>
+                    <select id="species" required>
+                        <option value="">Select Species</option>
+                        <option value="African Elephant">African Elephant</option>
+                        <option value="Lion">Lion</option>
+                        <option value="Black Rhino">Black Rhino</option>
+                        <option value="African Wild Dog">African Wild Dog</option>
+                        <option value="Cape Buffalo">Cape Buffalo</option>
+                        <option value="Leopard">Leopard</option>
+                        <option value="Cheetah">Cheetah</option>
+                        <option value="Hippopotamus">Hippopotamus</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="conservationStatus" id="statusLabel">Conservation Status:</label>
+                    <select id="conservationStatus" required>
+                        <option value="">Select Status</option>
+                        <option value="Vulnerable">Vulnerable</option>
+                        <option value="Endangered">Endangered</option>
+                        <option value="Critically Endangered">Critically Endangered</option>
+                        <option value="Near Threatened">Near Threatened</option>
+                        <option value="Least Concern">Least Concern</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2col">
+                <div class="form-group">
+                    <label for="location" id="locationLabel">Location:</label>
+                    <select id="location" required>
+                        <option value="">Select Location</option>
+                        <option value="Hwange National Park">Hwange National Park</option>
+                        <option value="Mana Pools National Park">Mana Pools National Park</option>
+                        <option value="Gonarezhou National Park">Gonarezhou National Park</option>
+                        <option value="Matobo National Park">Matobo National Park</option>
+                        <option value="Zambezi National Park">Zambezi National Park</option>
+                        <option value="Chizarira National Park">Chizarira National Park</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label id="gpsLabel">GPS Coordinates:</label>
+                    <div class="location-options">
+                        <div class="location-option" id="useCurrentLocation">Use Current Location</div>
+                        <div class="location-option" id="addManualLocation">Add Observed Location</div>
+                    </div>
+                    
+                    <div id="gpsContainer">
+                        <input type="text" id="gps" placeholder="Will be automatically filled" readonly>
+                        <small id="locationStatus"></small>
+                    </div>
+                    
+                    <div id="manualGps">
+                        <input type="text" id="manualGpsInput" placeholder="Enter observed coordinates (e.g., -18.6283, 26.9413)">
+                        <button type="button" id="confirmManualGps">Confirm</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2col">
+                <div class="form-group">
+                    <label for="population" id="populationLabel">Population Estimate:</label>
+                    <input type="number" id="population" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="surveyYear" id="yearLabel">Survey Year:</label>
+                    <input type="number" id="surveyYear" min="2000" max="2023" value="2023" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label id="threatsLabel">Threats Observed:</label>
+                <div class="checkbox-group" id="threatsGroup">
+                    <label><input type="checkbox" name="threats" value="Poaching"> <span class="threat-text">Poaching</span></label>
+                    <label><input type="checkbox" name="threats" value="Habitat Loss"> <span class="threat-text">Habitat Loss</span></label>
+                    <label><input type="checkbox" name="threats" value="Human-Wildlife Conflict"> <span class="threat-text">Human-Wildlife Conflict</span></label>
+                    <label><input type="checkbox" name="threats" value="Climate Change"> <span class="threat-text">Climate Change</span></label>
+                    <label><input type="checkbox" name="threats" value="Disease"> <span class="threat-text">Disease</span></label>
+                    <label><input type="checkbox" name="threats" value="Drought"> <span class="threat-text">Drought</span></label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="managementActions" id="actionsLabel">Management Actions:</label>
+                <textarea id="managementActions" rows="4" required placeholder="Describe management interventions (e.g., anti-poaching patrols, community education, habitat restoration)"></textarea>
+            </div>
+
+            <div class="grid-2col">
+                <div class="form-group">
+                    <label for="observerName" id="nameLabel">Observer Name:</label>
+                    <input type="text" id="observerName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="observerOrg" id="orgLabel">Organization:</label>
+                    <input type="text" id="observerOrg" value="ZimParks" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="observerContact" id="contactLabel">Contact Email:</label>
+                <input type="email" id="observerContact" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" id="submitBtn">Submit Survey</button>
+                <button type="button" id="viewDataBtn">View Survey Data</button>
+            </div>
+            
+            <div id="statusMessage" class="status-message"></div>
+        </form>
+    </div>
+
+    <!-- Modal for displaying survey data -->
+    <div id="surveyModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Zimbabwe Wildlife Survey Data</h2>
+            <div id="modalMessage" class="status-message"></div>
+            <table id="surveyTable">
+                <thead>
+                    <tr>
+                        <th id="thSpecies">Species</th>
+                        <th id="thStatus">Status</th>
+                        <th id="thLocation">Location</th>
+                        <th id="thPopulation">Population</th>
+                        <th id="thThreats">Threats</th>
+                        <th id="thActions">Actions</th>
+                        <th id="thObserver">Observer</th>
+                        <th id="thDate">Date</th>
+                    </tr>
+                </thead>
+                <tbody id="surveyTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Language data
+        const translations = {
+            en: {
+                formTitle: "Zimbabwe Wildlife Population Survey",
+                speciesLabel: "Species:",
+                statusLabel: "Conservation Status:",
+                locationLabel: "Location:",
+                gpsLabel: "GPS Coordinates:",
+                useCurrentLocation: "Use Current Location",
+                addManualLocation: "Add Observed Location",
+                locationPlaceholder: "Will be automatically filled",
+                manualPlaceholder: "Enter observed coordinates (e.g., -18.6283, 26.9413)",
+                confirmManual: "Confirm",
+                populationLabel: "Population Estimate:",
+                yearLabel: "Survey Year:",
+                threatsLabel: "Threats Observed:",
+                threats: ["Poaching", "Habitat Loss", "Human-Wildlife Conflict", "Climate Change", "Disease", "Drought"],
+                actionsLabel: "Management Actions:",
+                actionsPlaceholder: "Describe management interventions (e.g., anti-poaching patrols, community education, habitat restoration)",
+                nameLabel: "Observer Name:",
+                orgLabel: "Organization:",
+                contactLabel: "Contact Email:",
+                submitBtn: "Submit Survey",
+                viewDataBtn: "View Survey Data",
+                modalTitle: "Zimbabwe Wildlife Survey Data",
+                thSpecies: "Species",
+                thStatus: "Status",
+                thLocation: "Location",
+                thPopulation: "Population",
+                thThreats: "Threats",
+                thActions: "Actions",
+                thObserver: "Observer",
+                thDate: "Date",
+                speciesOptions: [
+                    {value: "African Elephant", text: "African Elephant"},
+                    {value: "Lion", text: "Lion"},
+                    {value: "Black Rhino", text: "Black Rhino"},
+                    {value: "African Wild Dog", text: "African Wild Dog"},
+                    {value: "Cape Buffalo", text: "Cape Buffalo"},
+                    {value: "Leopard", text: "Leopard"},
+                    {value: "Cheetah", text: "Cheetah"},
+                    {value: "Hippopotamus", text: "Hippopotamus"}
+                ],
+                statusOptions: [
+                    {value: "Vulnerable", text: "Vulnerable"},
+                    {value: "Endangered", text: "Endangered"},
+                    {value: "Critically Endangered", text: "Critically Endangered"},
+                    {value: "Near Threatened", text: "Near Threatened"},
+                    {value: "Least Concern", text: "Least Concern"}
+                ],
+                locationOptions: [
+                    {value: "Hwange National Park", text: "Hwange National Park"},
+                    {value: "Mana Pools National Park", text: "Mana Pools National Park"},
+                    {value: "Gonarezhou National Park", text: "Gonarezhou National Park"},
+                    {value: "Matobo National Park", text: "Matobo National Park"},
+                    {value: "Zambezi National Park", text: "Zambezi National Park"},
+                    {value: "Chizarira National Park", text: "Chizarira National Park"}
+                ]
+            },
+            sn: {
+                formTitle: "Ongororo yeMhuka dzeZimbabwe",
+                speciesLabel: "Mhando yeMhuka:",
+                statusLabel: "Mamiriro eKuchengetedza:",
+                locationLabel: "Nzvimbo:",
+                gpsLabel: "GPS Coordinates:",
+                useCurrentLocation: "Shandisa Nzvimbo Yako",
+                addManualLocation: "Wedzera Nzvimbo Yakaonekwa",
+                locationPlaceholder: "Ichizadzwa otomatiki",
+                manualPlaceholder: "Isa coordinates dzakaonekwa (semuenzaniso, -18.6283, 26.9413)",
+                confirmManual: "Simbisa",
+                populationLabel: "Kufungidzirwa kwehuwandu:",
+                yearLabel: "Gore reOngororo:",
+                threatsLabel: "Matambudziko Akaonekwa:",
+                threats: ["Kubvuta Mhuka", "Kurasikirwa Kwenzvimbo", "Kupokana kweVanhu neMhuka", "Shanduko yeMamiriro ekunze", "Chirwere", "Kusanaya Kwemvura"],
+                actionsLabel: "Matanho eKutonga:",
+                actionsPlaceholder: "Rondedzera matanho ekutonga (semuenzaniso, mapatrol ekudzivirira kubvuta, dzidzo yevanhu, kudzoreredza nzvimbo)",
+                nameLabel: "Zita reMuongorori:",
+                orgLabel: "Sangano:",
+                contactLabel: "Email Yekubata:",
+                submitBtn: "Tumira Ongororo",
+                viewDataBtn: "Ona Data reOngororo",
+                modalTitle: "Data reOngororo yeMhuka dzeZimbabwe",
+                thSpecies: "Mhando",
+                thStatus: "Mamiriro",
+                thLocation: "Nzvimbo",
+                thPopulation: "Huwanu",
+                thThreats: "Matambudziko",
+                thActions: "Matanho",
+                thObserver: "Muongorori",
+                thDate: "Zuva",
+                speciesOptions: [
+                    {value: "African Elephant", text: "Nzou"},
+                    {value: "Lion", text: "Shumba"},
+                    {value: "Black Rhino", text: "Chipembere"},
+                    {value: "African Wild Dog", text: "Mhumhi"},
+                    {value: "Cape Buffalo", text: "Nyati"},
+                    {value: "Leopard", text: "Ingwe"},
+                    {value: "Cheetah", text: "Dindingwe"},
+                    {value: "Hippopotamus", text: "Mvuu"}
+                ],
+                statusOptions: [
+                    {value: "Vulnerable", text: "Munjodzi"},
+                    {value: "Endangered", text: "Munjodzi Zvikuru"},
+                    {value: "Critically Endangered", text: "Munjodzi Zvikuru Kwazvo"},
+                    {value: "Near Threatened", text: "Pedyo neNjodzi"},
+                    {value: "Least Concern", text: "Hazvisi Munjodzi"}
+                ],
+                locationOptions: [
+                    {value: "Hwange National Park", text: "Hwange National Park"},
+                    {value: "Mana Pools National Park", text: "Mana Pools National Park"},
+                    {value: "Gonarezhou National Park", text: "Gonarezhou National Park"},
+                    {value: "Matobo National Park", text: "Matobo National Park"},
+                    {value: "Zambezi National Park", text: "Zambezi National Park"},
+                    {value: "Chizarira National Park", text: "Chizarira National Park"}
+                ]
+            },
+            nd: {
+                formTitle: "Ukuhlola kwezilwane zasendle zaseZimbabwe",
+                speciesLabel: "Uhlobo lwezilwane:",
+                statusLabel: "Isimo sokongiwa:",
+                locationLabel: "Indawo:",
+                gpsLabel: "I-GPS Coordinates:",
+                useCurrentLocation: "Sebenzisa indawo yakho",
+                addManualLocation: "Faka indawo ebonwe",
+                locationPlaceholder: "Izogcwaliswa ngokuzenzakalela",
+                manualPlaceholder: "Faka ama-coordinates abonwe (isib., -18.6283, 26.9413)",
+                confirmManual: "Qinisekisa",
+                populationLabel: "Isilinganiso senani:",
+                yearLabel: "Unyaka wokuhlola:",
+                threatsLabel: "Izinsongo ezibonwe:",
+                threats: ["Ukuzingela", "Ukulahlekelwa yindawo", "Ukungqubuzana kwezilwane nabantu", "Ukushintsha kwesimo sezulu", "Isifo", "Isomiso"],
+                actionsLabel: "Izinyathelo zokuphatha:",
+                actionsPlaceholder: "Chaza izinyathelo zokuphatha (isib., amapholisa okuvimbela ukuzingela, imfundo yomphakathi, ukubuyisela indawo)",
+                nameLabel: "Igama lomhloli:",
+                orgLabel: "Inhlangano:",
+                contactLabel: "I-imeyili yokuxhumana:",
+                submitBtn: "Thumela ukuhlola",
+                viewDataBtn: "Buka idatha yokuhlola",
+                modalTitle: "Idatha yokuhlola kwezilwane zasendle zaseZimbabwe",
+                thSpecies: "Uhlobo",
+                thStatus: "Isimo",
+                thLocation: "Indawo",
+                thPopulation: "Inani",
+                thThreats: "Izinsongo",
+                thActions: "Izinyathelo",
+                thObserver: "Umhloli",
+                thDate: "Usuku",
+                speciesOptions: [
+                    {value: "African Elephant", text: "Indlovu"},
+                    {value: "Lion", text: "Ibhubesi"},
+                    {value: "Black Rhino", text: "Ubhejane"},
+                    {value: "African Wild Dog", text: "Inkentshane"},
+                    {value: "Cape Buffalo", text: "Inyathi"},
+                    {value: "Leopard", text: "Ingwe"},
+                    {value: "Cheetah", text: "Iduli"},
+                    {value: "Hippopotamus", text: "Imvubu"}
+                ],
+                statusOptions: [
+                    {value: "Vulnerable", text: "Esengozini"},
+                    {value: "Endangered", text: "Esengozini enkulu"},
+                    {value: "Critically Endangered", text: "Esengozini enkulu kakhulu"},
+                    {value: "Near Threatened", text: "Esiseduzane nengozini"},
+                    {value: "Least Concern", text: "Okungakhathazeki kakhulu"}
+                ],
+                locationOptions: [
+                    {value: "Hwange National Park", text: "Hwange National Park"},
+                    {value: "Mana Pools National Park", text: "Mana Pools National Park"},
+                    {value: "Gonarezhou National Park", text: "Gonarezhou National Park"},
+                    {value: "Matobo National Park", text: "Matobo National Park"},
+                    {value: "Zambezi National Park", text: "Zambezi National Park"},
+                    {value: "Chizarira National Park", text: "Chizarira National Park"}
+                ]
+            }
+        };
+
+        // Current language
+        let currentLang = 'en';
+        // Store original values for form submission
+        const originalValues = {
+            species: {},
+            status: {},
+            location: {},
+            threats: {}
+        };
+
+        // JSONBin.io Configuration
+        const BIN_ID = '67e893788561e97a50f55ff6'; // Replace with your actual bin ID
+        const API_KEY = '$2a$10$hzYtAuFhm1Rhd7.sMUygBOK/H7vBGaEvupiO4ajsyG9tFyhNU.Ir6'; // Replace with your actual API key
+        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+        // DOM Elements
+        const surveyForm = document.getElementById('surveyForm');
+        const statusMessage = document.getElementById('statusMessage');
+        const viewDataBtn = document.getElementById('viewDataBtn');
+        const modal = document.getElementById('surveyModal');
+        const modalMessage = document.getElementById('modalMessage');
+        const closeBtn = document.querySelector('.close');
+        const surveyTableBody = document.getElementById('surveyTableBody');
+        
+        // Location elements
+        const useCurrentLocation = document.getElementById('useCurrentLocation');
+        const addManualLocation = document.getElementById('addManualLocation');
+        const gpsContainer = document.getElementById('gpsContainer');
+        const manualGps = document.getElementById('manualGps');
+        const gpsInput = document.getElementById('gps');
+        const manualGpsInput = document.getElementById('manualGpsInput');
+        const confirmManualGps = document.getElementById('confirmManualGps');
+        const locationStatus = document.getElementById('locationStatus');
+
+        // Language buttons
+        const langEnBtn = document.getElementById('langEn');
+        const langSnBtn = document.getElementById('langSn');
+        const langNdBtn = document.getElementById('langNd');
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeBin();
+            setupLocationSelection();
+            setupFormSubmission();
+            setupViewDataButton();
+            setupModalClose();
+            setupLanguageButtons();
+            storeOriginalValues();
+        });
+
+        // Store original values for form elements
+        function storeOriginalValues() {
+            // Species options
+            const speciesSelect = document.getElementById('species');
+            originalValues.species.options = Array.from(speciesSelect.options).map(opt => ({
+                value: opt.value,
+                text: opt.text
+            }));
+
+            // Status options
+            const statusSelect = document.getElementById('conservationStatus');
+            originalValues.status.options = Array.from(statusSelect.options).map(opt => ({
+                value: opt.value,
+                text: opt.text
+            }));
+
+            // Location options
+            const locationSelect = document.getElementById('location');
+            originalValues.location.options = Array.from(locationSelect.options).map(opt => ({
+                value: opt.value,
+                text: opt.text
+            }));
+
+            // Threats checkboxes
+            const threatCheckboxes = document.querySelectorAll('.checkbox-group input[name="threats"]');
+            originalValues.threats = Array.from(threatCheckboxes).map(cb => ({
+                value: cb.value,
+                text: cb.nextElementSibling.textContent.trim()
+            }));
+        }
+
+        // Setup language buttons
+        function setupLanguageButtons() {
+            langEnBtn.addEventListener('click', () => changeLanguage('en'));
+            langSnBtn.addEventListener('click', () => changeLanguage('sn'));
+            langNdBtn.addEventListener('click', () => changeLanguage('nd'));
+        }
+
+        // Change language
+        function changeLanguage(lang) {
+            currentLang = lang;
+            
+            // Update active button
+            langEnBtn.classList.remove('active');
+            langSnBtn.classList.remove('active');
+            langNdBtn.classList.remove('active');
+            document.getElementById(`lang${lang === 'en' ? 'En' : lang === 'sn' ? 'Sn' : 'Nd'}`).classList.add('active');
+            
+            // Get translations
+            const t = translations[lang];
+            
+            // Update form labels and buttons
+            document.getElementById('formTitle').textContent = t.formTitle;
+            document.getElementById('speciesLabel').textContent = t.speciesLabel;
+            document.getElementById('statusLabel').textContent = t.statusLabel;
+            document.getElementById('locationLabel').textContent = t.locationLabel;
+            document.getElementById('gpsLabel').textContent = t.gpsLabel;
+            document.getElementById('useCurrentLocation').textContent = t.useCurrentLocation;
+            document.getElementById('addManualLocation').textContent = t.addManualLocation;
+            document.getElementById('gps').placeholder = t.locationPlaceholder;
+            document.getElementById('manualGpsInput').placeholder = t.manualPlaceholder;
+            document.getElementById('confirmManualGps').textContent = t.confirmManual;
+            document.getElementById('populationLabel').textContent = t.populationLabel;
+            document.getElementById('yearLabel').textContent = t.yearLabel;
+            document.getElementById('threatsLabel').textContent = t.threatsLabel;
+            document.getElementById('actionsLabel').textContent = t.actionsLabel;
+            document.getElementById('managementActions').placeholder = t.actionsPlaceholder;
+            document.getElementById('nameLabel').textContent = t.nameLabel;
+            document.getElementById('orgLabel').textContent = t.orgLabel;
+            document.getElementById('contactLabel').textContent = t.contactLabel;
+            document.getElementById('submitBtn').textContent = t.submitBtn;
+            document.getElementById('viewDataBtn').textContent = t.viewDataBtn;
+            
+            // Update modal
+            document.getElementById('modalTitle').textContent = t.modalTitle;
+            document.getElementById('thSpecies').textContent = t.thSpecies;
+            document.getElementById('thStatus').textContent = t.thStatus;
+            document.getElementById('thLocation').textContent = t.thLocation;
+            document.getElementById('thPopulation').textContent = t.thPopulation;
+            document.getElementById('thThreats').textContent = t.thThreats;
+            document.getElementById('thActions').textContent = t.thActions;
+            document.getElementById('thObserver').textContent = t.thObserver;
+            document.getElementById('thDate').textContent = t.thDate;
+            
+            // Update dropdown options
+            updateSelectOptions('species', t.speciesOptions);
+            updateSelectOptions('conservationStatus', t.statusOptions);
+            updateSelectOptions('location', t.locationOptions);
+            
+            // Update threat checkboxes
+            const threatTexts = document.querySelectorAll('.threat-text');
+            threatTexts.forEach((span, index) => {
+                span.textContent = t.threats[index];
+            });
+        }
+
+        // Update select options while preserving selected value
+        function updateSelectOptions(selectId, options) {
+            const select = document.getElementById(selectId);
+            const selectedValue = select.value;
+            
+            // Clear existing options
+            select.innerHTML = '';
+            
+            // Add default option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = currentLang === 'en' ? 'Select ' + selectId.replace(/([A-Z])/g, ' $1') : 
+                               currentLang === 'sn' ? 'Sarudza ' + (selectId === 'species' ? 'Mhando' : selectId === 'conservationStatus' ? 'Mamiriro' : 'Nzvimbo') :
+                               'Khetha ' + (selectId === 'species' ? 'Uhlobo' : selectId === 'conservationStatus' ? 'Isimo' : 'Indawo');
+            select.appendChild(defaultOption);
+            
+            // Add new options
+            options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.value;
+                option.textContent = opt.text;
+                select.appendChild(option);
+            });
+            
+            // Restore selected value if it exists in new options
+            if (selectedValue && options.some(opt => opt.value === selectedValue)) {
+                select.value = selectedValue;
+            }
+        }
+
+        // Convert form data back to English before submission
+        function convertToEnglish(formData) {
+            // Convert species
+            if (currentLang !== 'en') {
+                const speciesOption = translations[currentLang].speciesOptions.find(opt => opt.text === formData.species);
+                if (speciesOption) {
+                    formData.species = speciesOption.value;
+                }
+                
+                // Convert conservation status
+                const statusOption = translations[currentLang].statusOptions.find(opt => opt.text === formData.conservationStatus);
+                if (statusOption) {
+                    formData.conservationStatus = statusOption.value;
+                }
+                
+                // Convert location (assuming location names remain in English)
+                // No conversion needed as we use the value attribute
+                
+                // Convert threats
+                formData.threatsObserved = formData.threatsObserved.map(threat => {
+                    const threatIndex = translations[currentLang].threats.indexOf(threat);
+                    return threatIndex >= 0 ? translations.en.threats[threatIndex] : threat;
+                });
+            }
+            
+            return formData;
+        }
+
+        // Initialize JSONBin.io bin with empty structure if it doesn't exist
+        async function initializeBin() {
+            try {
+                const response = await fetch(API_URL, {
+                    headers: {'X-Master-Key': API_KEY}
+                });
+                
+                if (response.status === 404) {
+                    // Create bin with initial structure if it doesn't exist
+                    const initialData = {
+                        metadata: {
+                            lastUpdated: new Date().toISOString(),
+                            totalEntries: 0,
+                            organization: "Zimbabwe Parks and Wildlife Management Authority"
+                        },
+                        surveys: []
+                    };
+                    
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': API_KEY
+                        },
+                        body: JSON.stringify(initialData)
+                    });
+                }
+            } catch (error) {
+                console.error('Initialization error:', error);
+            }
+        }
+
+        // Setup location selection functionality
+        function setupLocationSelection() {
+            useCurrentLocation.addEventListener('click', () => {
+                useCurrentLocation.classList.add('active');
+                addManualLocation.classList.remove('active');
+                gpsContainer.style.display = 'block';
+                manualGps.style.display = 'none';
+                locationStatus.textContent = currentLang === 'en' ? 'Getting your location...' : 
+                                           currentLang === 'sn' ? 'Kutora nzvimbo yako...' : 
+                                           'Ithola indawo yakho...';
+                locationStatus.style.color = 'inherit';
+                
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const lat = position.coords.latitude.toFixed(4);
+                            const lng = position.coords.longitude.toFixed(4);
+                            gpsInput.value = `${lat}, ${lng}`;
+                            locationStatus.textContent = currentLang === 'en' ? 'Location captured!' : 
+                                                       currentLang === 'sn' ? 'Nzvimbo yatorwa!' : 
+                                                       'Indawo itholwe!';
+                            locationStatus.style.color = 'green';
+                        },
+                        (error) => {
+                            console.error('Error getting location:', error);
+                            locationStatus.textContent = currentLang === 'en' ? 'Error: ' + error.message : 
+                                                       currentLang === 'sn' ? 'Kukanganisa: ' + error.message : 
+                                                       'Iphutha: ' + error.message;
+                            locationStatus.style.color = 'red';
+                        }
+                    );
+                } else {
+                    locationStatus.textContent = currentLang === 'en' ? 'Geolocation is not supported by your browser' : 
+                                               currentLang === 'sn' ? 'Geolocation haitsigirwi nebrowser yako' : 
+                                               'I-Geolocation ayisekelwa isiphequluli sakho';
+                    locationStatus.style.color = 'red';
+                }
+            });
+            
+            addManualLocation.addEventListener('click', () => {
+                addManualLocation.classList.add('active');
+                useCurrentLocation.classList.remove('active');
+                gpsContainer.style.display = 'none';
+                manualGps.style.display = 'block';
+                gpsInput.value = '';
+            });
+            
+            confirmManualGps.addEventListener('click', () => {
+                const coords = manualGpsInput.value.trim();
+                if (/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(coords)) {
+                    gpsInput.value = coords;
+                    manualGps.style.display = 'none';
+                    gpsContainer.style.display = 'block';
+                    locationStatus.textContent = currentLang === 'en' ? 'Observed location saved' : 
+                                               currentLang === 'sn' ? 'Nzvimbo yakaonekwa yakuchengetwa' : 
+                                               'Indawo ebonwe igciniwe';
+                    locationStatus.style.color = 'green';
+                } else {
+                    alert(currentLang === 'en' ? 'Please enter valid coordinates in the format: latitude, longitude (e.g., -18.6283, 26.9413)' : 
+                          currentLang === 'sn' ? 'Ndapota isa coordinates dzakarurama muchimiro: latitude, longitude (semuenzaniso, -18.6283, 26.9413)' : 
+                          'Sicela ufake ama-coordinates afanelekile ngendlela: i-latitude, i-longitude (isb., -18.6283, 26.9413)');
+                }
+            });
+        }
+
+        // Setup form submission
+        function setupFormSubmission() {
+            surveyForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Validate GPS coordinates
+                if (!gpsInput.value) {
+                    showMessage(statusMessage, 
+                        currentLang === 'en' ? 'Please select a method to record GPS coordinates' : 
+                        currentLang === 'sn' ? 'Ndapota sarudza nzira yekurekodha GPS coordinates' : 
+                        'Sicela ukhethe indlela yokurekhoda ama-GPS coordinates', 
+                        'error');
+                    return;
+                }
+
+                // Get form data
+                const surveyData = {
+                    id: `SURVEY-${Date.now()}`,
+                    species: document.getElementById('species').value,
+                    scientificName: getScientificName(document.getElementById('species').value),
+                    conservationStatus: document.getElementById('conservationStatus').value,
+                    location: {
+                        area: document.getElementById('location').value,
+                        coordinates: gpsInput.value
+                    },
+                    populationData: {
+                        count: parseInt(document.getElementById('population').value),
+                        year: parseInt(document.getElementById('surveyYear').value),
+                        method: "Field Survey"
+                    },
+                    threatsObserved: Array.from(document.querySelectorAll('input[name="threats"]:checked'))
+                                       .map(cb => cb.nextElementSibling.textContent.trim()),
+                    managementActions: document.getElementById('managementActions').value.split('\n')
+                                       .filter(action => action.trim() !== ''),
+                    observer: {
+                        name: document.getElementById('observerName').value,
+                        organization: document.getElementById('observerOrg').value,
+                        contact: document.getElementById('observerContact').value
+                    },
+                    timestamp: new Date().toISOString(),
+                    language: currentLang // Store the language used for submission
+                };
+
+                // Convert to English before submission
+                const englishData = convertToEnglish(surveyData);
+
+                try {
+                    // Show loading state
+                    const submitBtn = document.getElementById('submitBtn');
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = currentLang === 'en' ? 'Submitting...' : 
+                                           currentLang === 'sn' ? 'Kutumira...' : 
+                                           'Ithumela...';
+                    statusMessage.style.display = 'none';
+
+                    // Get existing data
+                    const existingDataResponse = await fetch(API_URL, {
+                        headers: {'X-Master-Key': API_KEY}
+                    });
+                    
+                    if (!existingDataResponse.ok) {
+                        throw new Error('Failed to fetch existing data');
+                    }
+                    
+                    const existingData = await existingDataResponse.json();
+                    const currentSurveys = existingData.record?.surveys || [];
+                    
+                    // Update data
+                    const updatedData = {
+                        metadata: {
+                            ...existingData.record.metadata,
+                            lastUpdated: new Date().toISOString(),
+                            totalEntries: currentSurveys.length + 1
+                        },
+                        surveys: [...currentSurveys, englishData]
+                    };
+
+                    // Save updated data
+                    const updateResponse = await fetch(API_URL, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': API_KEY
+                        },
+                        body: JSON.stringify(updatedData)
+                    });
+
+                    if (updateResponse.ok) {
+                        showMessage(statusMessage, 
+                            currentLang === 'en' ? 'Survey submitted successfully!' : 
+                            currentLang === 'sn' ? 'Ongororo yatumirwa zvakanaka!' : 
+                            'Ucwaningo luthunyelwe ngempumelelo!', 
+                            'success');
+                        surveyForm.reset();
+                        gpsInput.value = '';
+                        gpsContainer.style.display = 'none';
+                        manualGps.style.display = 'none';
+                        useCurrentLocation.classList.remove('active');
+                        addManualLocation.classList.remove('active');
+                    } else {
+                        throw new Error('Failed to save survey data');
+                    }
+                } catch (error) {
+                    console.error('Error submitting survey:', error);
+                    showMessage(statusMessage, 
+                        currentLang === 'en' ? `Error: ${error.message}` : 
+                        currentLang === 'sn' ? `Kukanganisa: ${error.message}` : 
+                        `Iphutha: ${error.message}`, 
+                        'error');
+                } finally {
+                    // Reset button state
+                    const submitBtn = document.getElementById('submitBtn');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = currentLang === 'en' ? 'Submit Survey' : 
+                                          currentLang === 'sn' ? 'Tumira Ongororo' : 
+                                          'Thumela ukuhlola';
+                }
+            });
+        }
+
+        // Setup view data button
+        function setupViewDataButton() {
+            viewDataBtn.addEventListener('click', async () => {
+                modal.style.display = 'block';
+                modalMessage.style.display = 'none';
+                surveyTableBody.innerHTML = '<tr><td colspan="8">' + 
+                    (currentLang === 'en' ? 'Loading data...' : 
+                     currentLang === 'sn' ? 'Kurodha data...' : 
+                     'Ilayisha idatha...') + '</td></tr>';
+                
+                try {
+                    const surveys = await fetchSurveyData();
+                    displaySurveys(surveys);
+                } catch (error) {
+                    console.error('Error loading survey data:', error);
+                    showMessage(modalMessage, 
+                        currentLang === 'en' ? `Error loading survey data: ${error.message}` : 
+                        currentLang === 'sn' ? `Kukanganisa pakurodha data reongororo: ${error.message}` : 
+                        `Iphutha ekulayishweni kwedatha yocwaningo: ${error.message}`, 
+                        'error');
+                    surveyTableBody.innerHTML = '<tr><td colspan="8">' + 
+                        (currentLang === 'en' ? 'Error loading data' : 
+                         currentLang === 'sn' ? 'Kukanganisa pakurodha data' : 
+                         'Iphutha ekulayishweni kwedatha') + '</td></tr>';
+                }
+            });
+        }
+
+        // Setup modal close
+        function setupModalClose() {
+            closeBtn.addEventListener('click', () => modal.style.display = 'none');
+            window.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Fetch survey data from JSONBin.io
+        async function fetchSurveyData() {
+            const response = await fetch(API_URL, {
+                headers: {'X-Master-Key': API_KEY}
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch survey data');
+            }
+            
+            const data = await response.json();
+            return data.record?.surveys || [];
+        }
+
+        // Display surveys in the modal table
+        function displaySurveys(surveys) {
+            if (surveys.length === 0) {
+                surveyTableBody.innerHTML = '<tr><td colspan="8">' + 
+                    (currentLang === 'en' ? 'No survey data available' : 
+                     currentLang === 'sn' ? 'Hapana data reongororo riripo' : 
+                     'Ayikho idatha yocwaningo etholakalayo') + '</td></tr>';
+                return;
+            }
+            
+            // Sort by timestamp (newest first)
+            surveys.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            surveyTableBody.innerHTML = '';
+            
+            surveys.forEach(survey => {
+                const row = document.createElement('tr');
+                
+                // Format conservation status with icon
+                const statusClass = survey.conservationStatus.toLowerCase().replace(' ', '-');
+                
+                // Get status display text based on current language
+                let statusDisplay;
+                if (currentLang === 'en') {
+                    statusDisplay = survey.conservationStatus;
+                } else if (currentLang === 'sn') {
+                    const statusOption = translations.en.statusOptions.find(opt => opt.value === survey.conservationStatus);
+                    if (statusOption) {
+                        const translatedOption = translations.sn.statusOptions.find(opt => opt.value === statusOption.value);
+                        statusDisplay = translatedOption ? translatedOption.text : survey.conservationStatus;
+                    } else {
+                        statusDisplay = survey.conservationStatus;
+                    }
+                } else { // nd
+                    const statusOption = translations.en.statusOptions.find(opt => opt.value === survey.conservationStatus);
+                    if (statusOption) {
+                        const translatedOption = translations.nd.statusOptions.find(opt => opt.value === statusOption.value);
+                        statusDisplay = translatedOption ? translatedOption.text : survey.conservationStatus;
+                    } else {
+                        statusDisplay = survey.conservationStatus;
+                    }
+                }
+                
+                const statusDisplayHTML = `
+                    <span class="status-icon ${statusClass}"></span>
+                    ${statusDisplay}
+                `;
+                
+                // Format threats as comma-separated list
+                let threatsDisplay;
+                if (currentLang === 'en') {
+                    threatsDisplay = survey.threatsObserved.join(', ') || (currentLang === 'en' ? 'None recorded' : 
+                                                                         currentLang === 'sn' ? 'Hapana zvakanyorwa' : 
+                                                                         'Akukho okurekhodiwe');
+                } else {
+                    threatsDisplay = survey.threatsObserved.map(threat => {
+                        const threatIndex = translations.en.threats.indexOf(threat);
+                        return threatIndex >= 0 ? translations[currentLang].threats[threatIndex] : threat;
+                    }).join(', ') || (currentLang === 'en' ? 'None recorded' : 
+                                    currentLang === 'sn' ? 'Hapana zvakanyorwa' : 
+                                    'Akukho okurekhodiwe');
+                }
+                
+                // Format management actions (first 3 with "..." if more)
+                const actionsDisplay = survey.managementActions.length > 3
+                    ? `${survey.managementActions.slice(0, 3).join(', ')}... (+${survey.managementActions.length - 3} more)`
+                    : survey.managementActions.join(', ');
+                
+                // Format date
+                const surveyDate = new Date(survey.timestamp).toLocaleDateString();
+                
+                // Get species display name based on current language
+                let speciesDisplay;
+                if (currentLang === 'en') {
+                    speciesDisplay = survey.species;
+                } else if (currentLang === 'sn') {
+                    const speciesOption = translations.en.speciesOptions.find(opt => opt.value === survey.species);
+                    if (speciesOption) {
+                        const translatedOption = translations.sn.speciesOptions.find(opt => opt.value === speciesOption.value);
+                        speciesDisplay = translatedOption ? translatedOption.text : survey.species;
+                    } else {
+                        speciesDisplay = survey.species;
+                    }
+                } else { // nd
+                    const speciesOption = translations.en.speciesOptions.find(opt => opt.value === survey.species);
+                    if (speciesOption) {
+                        const translatedOption = translations.nd.speciesOptions.find(opt => opt.value === speciesOption.value);
+                        speciesDisplay = translatedOption ? translatedOption.text : survey.species;
+                    } else {
+                        speciesDisplay = survey.species;
+                    }
+                }
+                
+                row.innerHTML = `
+                    <td>
+                        <strong>${speciesDisplay}</strong><br>
+                        <em>${survey.scientificName}</em>
+                    </td>
+                    <td>${statusDisplayHTML}</td>
+                    <td>
+                        ${survey.location.area}<br>
+                        <small>${survey.location.coordinates}</small>
+                    </td>
+                    <td>
+                        ${survey.populationData.count.toLocaleString()}<br>
+                        <small>${survey.populationData.year}</small>
+                    </td>
+                    <td>${threatsDisplay}</td>
+                    <td>${actionsDisplay}</td>
+                    <td>
+                        ${survey.observer.name}<br>
+                        <small>${survey.observer.organization}</small>
+                    </td>
+                    <td>${surveyDate}</td>
+                `;
+                
+                surveyTableBody.appendChild(row);
+            });
+        }
+
+        // Helper function to show messages
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = `status-message ${type}`;
+            element.style.display = 'block';
+            
+            // Hide message after 5 seconds (except in modal)
+            if (element !== modalMessage) {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Helper function to get scientific names
+        function getScientificName(commonName) {
+            const names = {
+                'African Elephant': 'Loxodonta africana',
+                'Lion': 'Panthera leo',
+                'Black Rhino': 'Diceros bicornis',
+                'African Wild Dog': 'Lycaon pictus',
+                'Cape Buffalo': 'Syncerus caffer',
+                'Leopard': 'Panthera pardus',
+                'Cheetah': 'Acinonyx jubatus',
+                'Hippopotamus': 'Hippopotamus amphibius'
+            };
+            return names[commonName] || 'Not specified';
+        }
+    </script>
+</body>
+</html>
