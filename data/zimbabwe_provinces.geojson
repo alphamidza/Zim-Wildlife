@@ -1,0 +1,74 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "Harare",
+          "drought_level": 1,
+          "affected_area": 15,
+          "rainfall_deficit": 25,
+          "crop_failure": 10,
+          "population_affected": 1500000
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [30.9, -17.7],
+              [31.2, -17.7],
+              [31.2, -18.0],
+              [30.9, -18.0],
+              [30.9, -17.7]
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "Matabeleland South",
+          "drought_level": 4,
+          "affected_area": 65,
+          "rainfall_deficit": 55,
+          "crop_failure": 40,
+          "population_affected": 800000
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [28.5, -22.0],
+              [29.5, -22.0],
+              [29.5, -21.0],
+              [28.5, -21.0],
+              [28.5, -22.0]
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "Masvingo",
+          "drought_level": 3,
+          "affected_area": 40,
+          "rainfall_deficit": 45,
+          "crop_failure": 30,
+          "population_affected": 1200000
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [30.0, -21.5],
+              [31.5, -21.5],
+              [31.5, -20.0],
+              [30.0, -20.0],
+              [30.0, -21.5]
+            ]
+          ]
+        }
+      }
+    ]
+  }
