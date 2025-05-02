@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zimbabwe Drought Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="https://www.zim.gov.zw/images/2019Cabinet/placeholder001.jpg" alt="Zimbabwe Drought Management System">
+                <h1>Zimbabwe Drought Management System</h1>
+            </div>
+            <div class="header-tools">
+                <div class="search-box">
+                    <input type="text" placeholder="Search...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="language-selector">
+                    <select>
+                        <option value="en">English</option>
+                        <option value="sn">Shona</option>
+                        <option value="nd">Ndebele</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <ul>
+                <li class="active"><a href="index.html">Home</a></li>
+                <li><a href="conditions.html">Current Conditions</a></li>
+                <li><a href="planning.html">Planning & Preparedness</a></li>
+                <li><a href="mitigation.html">Mitigation & Response</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+        <div class="container">
+            <div class="drought-alert alert-level-high">
+                <h2>Current Drought Alert: <span>Severe Drought Conditions</span></h2>
+                <p>Updated: <span id="current-date"></span></p>
+                <p>Emergency Hotline: <strong>080 123 4567</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Interactive Map Section -->
+        <section class="map-section">
+            <h2>Zimbabwe Drought Monitor</h2>
+            <div id="drought-map"></div>
+            <div class="map-legend">
+                <h3>Drought Intensity</h3>
+                <ul>
+                    <li><span class="legend-d0"></span> Abnormally Dry</li>
+                    <li><span class="legend-d1"></span> Moderate Drought</li>
+                    <li><span class="legend-d2"></span> Severe Drought</li>
+                    <li><span class="legend-d3"></span> Extreme Drought</li>
+                    <li><span class="legend-d4"></span> Exceptional Drought</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Quick Stats -->
+        <section class="quick-stats">
+            <div class="stat-card">
+                <h3>Rainfall Deficit</h3>
+                <div class="stat-value">-45%</div>
+                <p>Below normal for this season</p>
+            </div>
+            <div class="stat-card">
+                <h3>Dam Levels</h3>
+                <div class="stat-value">32%</div>
+                <p>National average capacity</p>
+            </div>
+            <div class="stat-card">
+                <h3>Crop Condition</h3>
+                <div class="stat-value">Poor</div>
+                <p>65% of crops stressed</p>
+            </div>
+        </section>
+
+        <!-- Content Columns -->
+        <div class="content-columns">
+            <section class="news-section">
+                <h2><i class="fas fa-newspaper"></i> Latest News</h2>
+                <article>
+                    <h3>Government Announces Drought Relief Program</h3>
+                    <p class="date">March 15, 2023</p>
+                    <p>The Ministry of Lands, Agriculture, Fisheries, Water and Rural Development has launched a new drought relief initiative targeting affected farmers...</p>
+                    <a href="#" class="read-more">Read more</a>
+                </article>
+                <article>
+                    <h3>UN Agencies Provide Support to Drought-Stricken Areas</h3>
+                    <p class="date">March 10, 2023</p>
+                    <p>WFP and FAO are collaborating with local authorities to provide food assistance and agricultural support to communities facing food insecurity...</p>
+                    <a href="#" class="read-more">Read more</a>
+                </article>
+                <a href="#" class="view-all">View all news</a>
+            </section>
+
+            <section class="resources-section">
+                <h2><i class="fas fa-book"></i> Quick Resources</h2>
+                <ul class="resource-list">
+                    <li><a href="#"><i class="fas fa-file-pdf"></i> Weekly Drought Report (PDF)</a></li>
+                    <li><a href="#"><i class="fas fa-tint"></i> Water Conservation Guide</a></li>
+                    <li><a href="#"><i class="fas fa-seedling"></i> Drought-Resistant Crops</a></li>
+                    <li><a href="#"><i class="fas fa-phone-alt"></i> Emergency Contacts</a></li>
+                </ul>
+                
+                <h2><i class="fas fa-calendar-alt"></i> Upcoming Events</h2>
+                <div class="event">
+                    <h3>Drought Preparedness Workshop</h3>
+                    <p><i class="far fa-calendar"></i> April 5, 2023 | Harare</p>
+                </div>
+                <div class="event">
+                    <h3>Water Harvesting Training</h3>
+                    <p><i class="far fa-calendar"></i> April 12, 2023 | Bulawayo</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-partners">
+                <h3>Our Partners</h3>
+                <div class="partner-logos">
+                    <img src="images/partner-govt.png" alt="Government of Zimbabwe">
+                    <img src="images/partner-undp.png" alt="UNDP">
+                    <img src="images/partner-fao.png" alt="FAO">
+                    <img src="images/partner-university.png" alt="University of Zimbabwe">
+                </div>
+            </div>
+            <div class="footer-links">
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Accessibility</a></li>
+                    <li><a href="#">Terms of Use</a></li>
+                    <li><a href="#">Site Map</a></li>
+                </ul>
+                <div class="social-media">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Zimbabwe Drought Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
